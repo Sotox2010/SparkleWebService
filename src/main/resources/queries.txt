@@ -1,0 +1,104 @@
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Sample Query #1: List all the fuel purchases for car 1 with date and gas station name
+
+prefix veh:  <http://monead.com/semantic/data/vehicle#>
+prefix pveh: <http://monead.com/semantic/data/vehicle/personal#>
+
+select ?thePurchase ?purchaseDate ?stationName where { 
+		?thePurchase a veh:FuelPurchase .
+		?thePurchase veh:vehicle pveh:car1 .
+		?thePurchase veh:date ?purchaseDate .
+		?thePurchase veh:purchaseStation ?theStation .
+		?theStation veh:stationName ?stationName
+}
+
+INLINE: prefix veh: <http://monead.com/semantic/data/vehicle#> prefix pveh: <http://monead.com/semantic/data/vehicle/personal#> select ?thePurchase ?purchaseDate ?stationName where {	?thePurchase a veh:FuelPurchase . ?thePurchase veh:vehicle pveh:car1 . ?thePurchase veh:date ?purchaseDate . ?thePurchase veh:purchaseStation ?theStation . ?theStation veh:stationName ?stationName }
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Sample Query #2: List all the fuel purchases for car 3 with date, gas station name, average MPH and actual MPG. Order the output by the purchase date.
+
+prefix veh:  <http://monead.com/semantic/data/vehicle#>
+prefix pveh: <http://monead.com/semantic/data/vehicle/personal#>
+
+select ?thePurchase ?purchaseDate ?stationName ?averageMph ?actualMpg where { 
+		?thePurchase a veh:FuelPurchase .
+		?thePurchase veh:vehicle pveh:car3 .
+		?thePurchase veh:date ?purchaseDate .
+		?thePurchase veh:purchaseStation ?theStation .
+		?theStation veh:stationName ?stationName .
+		?thePurchase veh:averageMph ?averageMph .
+		?thePurchase veh:actualMpg ?actualMpg .
+}
+order by ?purchaseDate
+
+INLINE: prefix veh:  <http://monead.com/semantic/data/vehicle#> prefix pveh: <http://monead.com/semantic/data/vehicle/personal#> select ?thePurchase ?purchaseDate ?stationName ?averageMph ?actualMpg where { ?thePurchase a veh:FuelPurchase . ?thePurchase veh:vehicle pveh:car3 . ?thePurchase veh:date ?purchaseDate . ?thePurchase veh:purchaseStation ?theStation . ?theStation veh:stationName ?stationName . ?thePurchase veh:averageMph ?averageMph . ?thePurchase veh:actualMpg ?actualMpg . } order by ?purchaseDate
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Sample Query #3: List the number of times that fuel was purchased at each gas station for car 2
+
+prefix veh:  <http://monead.com/semantic/data/vehicle#>
+prefix pveh: <http://monead.com/semantic/data/vehicle/personal#>
+
+select (count(distinct ?purchase) as ?count) ?station ?stationName ?placeName where {
+		?purchase a veh:FuelPurchase .
+		?purchase veh:vehicle pveh:car2 .
+		?purchase veh:purchaseStation ?station .
+		?station veh:stationName ?stationName .
+		?station veh:location ?location .
+		?location veh:placeName ?placeName
+}
+group by ?station ?stationName ?placeName
+
+INLINE: prefix veh:  <http://monead.com/semantic/data/vehicle#> prefix pveh: <http://monead.com/semantic/data/vehicle/personal#> select (count(distinct ?purchase) as ?count) ?station ?stationName ?placeName where { ?purchase a veh:FuelPurchase . ?purchase veh:vehicle pveh:car2 . ?purchase veh:purchaseStation ?station . ?station veh:stationName ?stationName . ?station veh:location ?location . ?location veh:placeName ?placeName } group by ?station ?stationName ?placeName
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Sample Query #4: For any fuel purchases with comments, list the purchase and comment
+
+prefix veh:  <http://monead.com/semantic/data/vehicle#>
+
+select ?purchase ?vehicle ?comment where {
+		?purchase veh:comment ?comment .
+		?purchase veh:vehicle ?vehicle
+}
+
+INLINE: prefix veh: <http://monead.com/semantic/data/vehicle#> select ?purchase ?vehicle ?comment where { ?purchase veh:comment ?comment . ?purchase veh:vehicle ?vehicle }
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Sample Query #5: List date and mpg for all fuel purchases for car 2
+
+prefix veh:  <http://monead.com/semantic/data/vehicle#>
+prefix pveh: <http://monead.com/semantic/data/vehicle/personal#>
+
+select ?date ?mpg { 
+		?fuelpurch a veh:FuelPurchase .
+		?fuelpurch veh:vehicle pveh:car2 .
+		?fuelpurch veh:actualMpg ?mpg .
+		?fuelpurch veh:date ?date 
+}
+
+INLINE: prefix veh:  <http://monead.com/semantic/data/vehicle#> prefix pveh: <http://monead.com/semantic/data/vehicle/personal#> select ?date ?mpg { ?fuelpurch a veh:FuelPurchase . ?fuelpurch veh:vehicle pveh:car2 . ?fuelpurch veh:actualMpg ?mpg . ?fuelpurch veh:date ?date }
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Sample Query #6: List purchases where the amount charged versus owed are different (likely due to rounding)
+
+prefix veh:  <http://monead.com/semantic/data/vehicle#>
+
+select ?thePurchase ?theVendor ?theLocation ?theCharge ?theAmountOwed { 
+		?thePurchase a veh:FuelPurchase .
+		?thePurchase veh:totalUsDollarsCharged ?theCharge .
+		?thePurchase veh:totalUsDollarsOwed  ?theAmountOwed .
+		?thePurchase veh:purchaseStation ?theGasStation .
+		?theGasStation veh:stationName ?theVendor .
+		?theGasStation veh:location ?thePlace .
+		?thePlace veh:placeName ?theLocation .
+		FILTER (?theCharge != ?theAmountOwed)
+}
+
+INLINE: prefix veh: <http://monead.com/semantic/data/vehicle#> select ?thePurchase ?theVendor ?theLocation ?theCharge ?theAmountOwed { ?thePurchase a veh:FuelPurchase . ?thePurchase veh:totalUsDollarsCharged ?theCharge . ?thePurchase veh:totalUsDollarsOwed  ?theAmountOwed . ?thePurchase veh:purchaseStation ?theGasStation . ?theGasStation veh:stationName ?theVendor . ?theGasStation veh:location ?thePlace . ?thePlace veh:placeName ?theLocation . FILTER (?theCharge != ?theAmountOwed) }
