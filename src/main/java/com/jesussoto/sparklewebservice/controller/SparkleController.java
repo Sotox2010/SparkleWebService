@@ -10,6 +10,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -24,10 +25,10 @@ import com.jesussoto.sparklewebservice.util.RDFUtils;
 public class SparkleController {
 
     public static final String PATH_QUERY = "/query";
-
     public static final String PATH_QUERY_DOWNLOAD = "/query_download";
-
     public static final String PATH_DUMP = "/dump";
+
+    public static final String PARAM_FORMAT = "format";
 
     @Autowired
     private Model model;
@@ -47,15 +48,19 @@ public class SparkleController {
     @RequestMapping(value=PATH_QUERY, method=RequestMethod.POST)
     public @ResponseBody String query(
             @RequestBody String sparql,
+            @RequestParam(value=PARAM_FORMAT, required=false) Integer format,
             HttpServletResponse response) {
 
+        System.out.println("format: " + format);
+        //sparql = sparql.replace("\"", "");
         String result = null;
 
         try {
             result = RDFUtils.execSparqlQueryToString(model, sparql);
         } catch (QueryException e) {
+            e.printStackTrace();
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            response.setContentType("application/json");
+            //response.setContentType("application/json");
 
             ErrorResponseBody errorResponse = new ErrorResponseBody(
                     System.currentTimeMillis(),
@@ -65,11 +70,14 @@ public class SparkleController {
                     e.getMessage());
 
             try {
+                System.out.println(sparql);
                 return (new ObjectMapper()).writeValueAsString(errorResponse);
             } catch (JsonProcessingException e1) {
                 e1.printStackTrace();
             }
         }
+
+        System.out.println(sparql);
 
         response.setStatus(HttpServletResponse.SC_OK);
         return result;

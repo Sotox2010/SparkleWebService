@@ -14,7 +14,7 @@ select ?thePurchase ?purchaseDate ?stationName where {
 		?theStation veh:stationName ?stationName
 }
 
-INLINE: prefix veh: <http://monead.com/semantic/data/vehicle#> prefix pveh: <http://monead.com/semantic/data/vehicle/personal#> select ?thePurchase ?purchaseDate ?stationName where {	?thePurchase a veh:FuelPurchase . ?thePurchase veh:vehicle pveh:car1 . ?thePurchase veh:date ?purchaseDate . ?thePurchase veh:purchaseStation ?theStation . ?theStation veh:stationName ?stationName }
+INLINE: prefix veh: <http://monead.com/semantic/data/vehicle#> prefix pveh: <http://monead.com/semantic/data/vehicle/personal#> select ?thePurchase ?purchaseDate ?stationName where { ?thePurchase a veh:FuelPurchase . ?thePurchase veh:vehicle pveh:car1 . ?thePurchase veh:date ?purchaseDate . ?thePurchase veh:purchaseStation ?theStation . ?theStation veh:stationName ?stationName }
 
 ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -53,7 +53,7 @@ select (count(distinct ?purchase) as ?count) ?station ?stationName ?placeName wh
 }
 group by ?station ?stationName ?placeName
 
-INLINE: prefix veh:  <http://monead.com/semantic/data/vehicle#> prefix pveh: <http://monead.com/semantic/data/vehicle/personal#> select (count(distinct ?purchase) as ?count) ?station ?stationName ?placeName where { ?purchase a veh:FuelPurchase . ?purchase veh:vehicle pveh:car2 . ?purchase veh:purchaseStation ?station . ?station veh:stationName ?stationName . ?station veh:location ?location . ?location veh:placeName ?placeName } group by ?station ?stationName ?placeName
+INLINE: prefix veh: <http://monead.com/semantic/data/vehicle#> prefix pveh: <http://monead.com/semantic/data/vehicle/personal#> select (count(distinct ?purchase) as ?count) ?station ?stationName ?placeName where { ?purchase a veh:FuelPurchase . ?purchase veh:vehicle pveh:car2 . ?purchase veh:purchaseStation ?station . ?station veh:stationName ?stationName . ?station veh:location ?location . ?location veh:placeName ?placeName } group by ?station ?stationName ?placeName
 
 ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
