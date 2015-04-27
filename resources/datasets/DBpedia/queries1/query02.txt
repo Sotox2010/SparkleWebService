@@ -1,0 +1,21 @@
+﻿# Query 2
+# Things 'near' (~5 km) Brandenburg Gate in any language
+
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+PREFIX geo: <http://www.w3.org/2003/01/geo/wgs84_pos#>
+
+SELECT ?subject ?lat ?long
+WHERE {
+  <http://dbpedia.org/resource/Brandenburg_Gate> geo:lat ?brandenburgLat.
+  <http://dbpedia.org/resource/Brandenburg_Gate> geo:long ?brandenburgLong.
+  ?subject geo:lat ?lat.
+  ?subject geo:long ?long.
+
+  FILTER(xsd:double(?lat) - xsd:double(?brandenburgLat) <= 0.05 &&
+    xsd:double(?brandenburgLat) - xsd:double(?lat) <= 0.05 &&
+    xsd:double(?long) - xsd:double(?brandenburgLong) <= 0.05 &&
+    xsd:double(?brandenburgLong) - xsd:double(?long) <= 0.05
+  ).
+}
+
+

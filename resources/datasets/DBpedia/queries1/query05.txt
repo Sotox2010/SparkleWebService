@@ -1,0 +1,19 @@
+﻿# Query 5
+# Things 'near' (~1110 km) Angel Falls in any language
+
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+PREFIX geo: <http://www.w3.org/2003/01/geo/wgs84_pos#>
+
+SELECT ?subject ?lat ?long
+WHERE {
+  <http://dbpedia.org/resource/Angel_Falls_(Maine)> geo:lat ?fallsLat.
+  <http://dbpedia.org/resource/Angel_Falls_(Maine)> geo:long ?fallsLong.
+  ?subject geo:lat ?lat.
+  ?subject geo:long ?long.
+
+  FILTER(xsd:double(?lat) - xsd:double(?fallsLat) <= 10 &&
+    xsd:double(?fallsLat) - xsd:double(?lat) <= 10 &&
+    xsd:double(?long) - xsd:double(?fallsLong) <= 10 &&
+    xsd:double(?fallsLong) - xsd:double(?long) <= 10
+  ).
+}

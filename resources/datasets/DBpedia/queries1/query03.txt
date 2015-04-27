@@ -1,0 +1,21 @@
+﻿# Query 3
+# Things 'near' (~2.5 km) Taj Mahal in any language
+
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+PREFIX geo: <http://www.w3.org/2003/01/geo/wgs84_pos#>
+
+SELECT ?subject ?lat ?long
+WHERE {
+  <http://dbpedia.org/resource/Taj_Mahal_Bangladesh> geo:lat ?tajmahalLat.
+  <http://dbpedia.org/resource/Taj_Mahal_Bangladesh> geo:long ?tajmahalLong.
+  ?subject geo:lat ?lat.
+  ?subject geo:long ?long.
+
+  FILTER(xsd:double(?lat) - xsd:double(?tajmahalLat) <= 0.025 &&
+    xsd:double(?tajmahalLat) - xsd:double(?lat) <= 0.025 &&
+    xsd:double(?long) - xsd:double(?tajmahalLong) <= 0.025 &&
+    xsd:double(?tajmahalLong) - xsd:double(?long) <= 0.025
+  ).
+}
+
+

@@ -1,0 +1,18 @@
+﻿# Query 1
+# Things 'near' (~5 km) Eiffel Tower
+
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+PREFIX geo: <http://www.w3.org/2003/01/geo/wgs84_pos#>
+
+SELECT ?subject ?lat ?long
+WHERE {
+  <http://dbpedia.org/resource/Eiffel_Tower_(Paris,_Tennessee)> geo:lat ?eiffelLat.
+  <http://dbpedia.org/resource/Eiffel_Tower_(Paris,_Tennessee)> geo:long ?eiffelLong.
+  ?subject geo:lat ?lat.
+  ?subject geo:long ?long.
+
+  FILTER(xsd:double(?lat) - xsd:double(?eiffelLat) <= 0.05 &&
+    xsd:double(?eiffelLat) - xsd:double(?lat) <= 0.05 &&
+    xsd:double(?long) - xsd:double(?eiffelLong) <= 0.05 &&
+    xsd:double(?eiffelLong) - xsd:double(?long) <= 0.05) .
+}

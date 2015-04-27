@@ -1,0 +1,20 @@
+﻿# Query 4
+# Things 'near' (~11 km) White House in english language
+
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+PREFIX geo: <http://www.w3.org/2003/01/geo/wgs84_pos#>
+
+SELECT ?subject ?lat ?long
+WHERE {
+  <http://dbpedia.org/resource/White_House_Peace_Vigil> geo:lat ?houseLat.
+  <http://dbpedia.org/resource/White_House_Peace_Vigil> geo:long ?houseLong.
+  ?subject geo:lat ?lat.
+  ?subject geo:long ?long.
+
+  FILTER(xsd:double(?lat) - xsd:double(?houseLat) <= 0.1 &&
+    xsd:double(?houseLat) - xsd:double(?lat) <= 0.1 &&
+    xsd:double(?long) - xsd:double(?houseLong) <= 0.1 &&
+    xsd:double(?houseLong) - xsd:double(?long) <= 0.1
+  ).
+}
+

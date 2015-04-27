@@ -2,7 +2,7 @@
 <classpath>
 	<classpathentry kind="src" path="src/main/java"/>
 	<classpathentry kind="src" path="src/test/java"/>
-	<classpathentry kind="src" path="src/main/resources"/>
+	<classpathentry excluding="datasets/" kind="src" path="src/main/resources"/>
 	<classpathentry exported="true" kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry exported="true" kind="lib" path="C:/Users/Jesus Soto/.gradle/caches/modules-2/files-2.1/org.springframework.boot/spring-boot-starter-web/1.0.2.RELEASE/fb26276f8400658e15d571350c5b577dfe40567a/spring-boot-starter-web-1.0.2.RELEASE.jar" sourcepath="C:/Users/Jesus Soto/.gradle/caches/modules-2/files-2.1/org.springframework.boot/spring-boot-starter-web/1.0.2.RELEASE/5c2d27970a82a6b670cf1f44e9b3fd07c0d0b198/spring-boot-starter-web-1.0.2.RELEASE-sources.jar"/>
 	<classpathentry exported="true" kind="lib" path="C:/Users/Jesus Soto/.gradle/caches/modules-2/files-2.1/org.springframework.boot/spring-boot-starter-actuator/1.0.2.RELEASE/699771411accffc41656db59ae51dd6663a653d6/spring-boot-starter-actuator-1.0.2.RELEASE.jar" sourcepath="C:/Users/Jesus Soto/.gradle/caches/modules-2/files-2.1/org.springframework.boot/spring-boot-starter-actuator/1.0.2.RELEASE/174d1760d0f1ca8ec4f34ecc02891cf3d3d3b22b/spring-boot-starter-actuator-1.0.2.RELEASE-sources.jar"/>

@@ -48,3 +48,8 @@ gradle-app.setting
 
 # Avoid ignoring Gradle wrapper jar file (.jar files are usually ignored)
 !gradle-wrapper.jar
+
+
+resources/datasets/LUBM/*.nt
+resources/datasets/DBpedia/*.nt
+resources/results/*
