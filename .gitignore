@@ -52,4 +52,6 @@ gradle-app.setting
 
 resources/datasets/LUBM/*.nt
 resources/datasets/DBpedia/*.nt
+resources/datasets/LUBM/TDB_*
+resources/datasets/DBpedia/TDB_*
 resources/results/*

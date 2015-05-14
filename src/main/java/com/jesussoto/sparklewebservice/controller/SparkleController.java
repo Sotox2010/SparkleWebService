@@ -22,6 +22,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hp.hpl.jena.ontology.OntModel;
+import com.hp.hpl.jena.query.Dataset;
 import com.hp.hpl.jena.query.QueryException;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.jesussoto.sparklewebservice.model.ErrorResponseBody;
@@ -39,18 +40,18 @@ public class SparkleController {
     public static final String PARAM_FORMAT = "format";
 
     @Autowired
-    private OntModel model;
+    private Dataset dataset;
 
     @RequestMapping(value=PATH_DUMP, method=RequestMethod.GET)
     public @ResponseBody String dumpModel(HttpServletResponse response) {
-        String format = RDFFormat.RDFXML_PLAIN.toString();
+        /*String format = RDFFormat.RDFXML_PLAIN.toString();
         System.out.println("Format: " + format);
         StringWriter out = new StringWriter();
         //model.write(out, format);
         model.write(out);
-        String result = out.toString();
+        String result = out.toString();*/
 
-        return result;
+        return "";
     }
 
     @RequestMapping(value=PATH_QUERY, method=RequestMethod.POST, produces = "text/plain; charset=UTF-8")
@@ -68,7 +69,7 @@ public class SparkleController {
         String result = null;
 
         try {
-            result = RDFUtils.execSparqlQueryToString(model, sparql,
+            result = RDFUtils.execSparqlQueryToString(dataset, sparql,
                     format == null ? 0 : format.intValue());
         } catch (QueryException e) {
             e.printStackTrace();
@@ -114,7 +115,7 @@ public class SparkleController {
         String result = null;
 
         try {
-            ResultMetadata metadata = RDFUtils.execSparqlQueryDownload(model, sparql,
+            ResultMetadata metadata = RDFUtils.execSparqlQueryDownload(dataset, sparql,
                     format == null ? 0 : format.intValue());
             try {
                 return (new ObjectMapper()).writeValueAsString(metadata);

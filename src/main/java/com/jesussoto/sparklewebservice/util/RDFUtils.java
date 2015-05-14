@@ -4,13 +4,17 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+
 import org.apache.commons.io.FileUtils;
+
 import com.hp.hpl.jena.ontology.OntModel;
+import com.hp.hpl.jena.query.Dataset;
 import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.query.QueryException;
 import com.hp.hpl.jena.query.QueryExecution;
 import com.hp.hpl.jena.query.QueryExecutionFactory;
 import com.hp.hpl.jena.query.QueryFactory;
+import com.hp.hpl.jena.query.ReadWrite;
 import com.hp.hpl.jena.query.ResultSet;
 import com.hp.hpl.jena.query.ResultSetFormatter;
 import com.hp.hpl.jena.sparql.resultset.ResultsFormat;
@@ -53,31 +57,39 @@ public class RDFUtils {
         ".txt"
     };
 
-    public static String execSparqlQueryToString(OntModel model, String sparqlQuery, int format) throws QueryException {
-        Query query = QueryFactory.create(sparqlQuery);
-        QueryExecution qexecution = QueryExecutionFactory.create(query, model);
-        ResultSet results = qexecution.execSelect();
+    public static String execSparqlQueryToString(Dataset dataset, String sparqlQuery, int format) throws QueryException {
+        dataset.begin(ReadWrite.READ);
 
-        return formatResult(results, format, false);
+        Query query = QueryFactory.create(sparqlQuery);
+        QueryExecution qexecution = QueryExecutionFactory.create(query, dataset);
+        ResultSet results = qexecution.execSelect();
+        String resultStr = formatResult(results, format, false);
+
+        dataset.end();
+        return resultStr;
     }
 
-    public static ResultMetadata execSparqlQueryDownload(OntModel model, String sparqlQuery, int format) throws QueryException {
-        System.out.println("BEGIN QUERY PROCESS: " + System.currentTimeMillis());
+    public static ResultMetadata execSparqlQueryDownload(Dataset dataset, String sparqlQuery, int format) throws QueryException {
+        //long beginTime = System.currentTimeMillis();
+        //System.out.println("BEGIN QUERY PROCESS: " + System.currentTimeMillis());
+
+        dataset.begin(ReadWrite.READ);
 
         Query query = QueryFactory.create(sparqlQuery);
-        QueryExecution qexecution = QueryExecutionFactory.create(query, model);
+        QueryExecution qexecution = QueryExecutionFactory.create(query, dataset);
         ResultSet results = qexecution.execSelect();
 
-        int i;
-        for (i = 0; results.hasNext(); ++i) {
-            results.nextSolution();
-        }
+        /*int i;
+        for (i = 0; results.hasNext(); ++i, results.nextSolution());
         System.out.println("CARDINALITY: " + i);
-        System.out.println("END QUERY PROCESS: " + System.currentTimeMillis());
+        System.out.println("QUERY PROCESS TIME: " + (System.currentTimeMillis() - beginTime));*/
 
         String extension = EXTENSIONS[(format >= 0 && format < EXTENSIONS.length) ? format : 0];
         String filename = formatResult(results, format, true, extension);
         File resultFile = new File("resources/results/" + filename);
+
+        qexecution.close();
+        dataset.end();
 
         return new ResultMetadata(
                 System.currentTimeMillis(),
@@ -95,22 +107,22 @@ public class RDFUtils {
 
         switch (format) {
             case FORMAT_RDF_JSON:
-                resultsFormat =  ResultsFormat.FMT_RS_JSON;
+                resultsFormat = ResultsFormat.FMT_RS_JSON;
                 break;
             case FORMAT_TURTLE:
-                resultsFormat =  ResultsFormat.FMT_RDF_TURTLE;
+                resultsFormat = ResultsFormat.FMT_RDF_TURTLE;
                 break;
             case FORMAT_NTRIPLES:
-                resultsFormat =  ResultsFormat.FMT_RDF_NT;
+                resultsFormat = ResultsFormat.FMT_RDF_NT;
                 break;
             case FORMAT_N3:
-                resultsFormat =  ResultsFormat.FMT_RDF_N3;
+                resultsFormat = ResultsFormat.FMT_RDF_N3;
                 break;
             case FORMAT_PLAIN_TEXT:
-                resultsFormat = null;
+                resultsFormat = ResultsFormat.FMT_TEXT;
                 break;
             default:
-                resultsFormat =  ResultsFormat.FMT_RDF_XML;
+                resultsFormat = ResultsFormat.FMT_RS_XML;
         }
 
         return saveToFile
@@ -119,7 +131,7 @@ public class RDFUtils {
     }
 
     private static String writeToString(ResultSet results, ResultsFormat format) {
-        if (format == null) {
+        if (format.equals(ResultsFormat.FMT_TEXT)) {
             return ResultSetFormatter.asText(results);
         } else {
             ByteArrayOutputStream out = new ByteArrayOutputStream();
@@ -133,7 +145,7 @@ public class RDFUtils {
             String filename = "query_result_" + String.format("%03d", sResultFilenameCode++) + extension;
             File resultFile = new File("resources/results/" + filename);
 
-            if (format == null) {
+            if (format.equals(ResultsFormat.FMT_TEXT)) {
                 FileUtils.writeStringToFile(resultFile, ResultSetFormatter.asText(results));
             } else {
                 resultFile.createNewFile();

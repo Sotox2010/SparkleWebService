@@ -3,7 +3,7 @@ PREFIX  rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 
 SELECT  *
 WHERE
-  { ?X rdf:type ub:AssociateProfessor .
+  { ?X rdf:type ub:FullProfessor .
     ?X ub:worksFor <http://www.Department0.University0.edu> .
     ?X ub:name ?Y1 .
     ?X ub:emailAddress ?Y2 .

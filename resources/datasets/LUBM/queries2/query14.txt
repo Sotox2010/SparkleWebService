@@ -3,6 +3,4 @@ PREFIX  rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 
 SELECT  *
 WHERE
-  { ?X ub:headOf ?Y .
-    ?Y ub:subOrganizationOf <http://www.University0.edu>
-  }
+  { ?X rdf:type ub:UndergraduateStudent }

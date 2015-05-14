@@ -7,7 +7,7 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
-import com.hp.hpl.jena.ontology.OntModel;
+import com.hp.hpl.jena.query.Dataset;
 import com.jesussoto.sparklewebservice.rdf.RDFModel;
 
 //Tell Spring to automatically inject any dependencies that are marked in
@@ -33,7 +33,7 @@ public class Application {
 
     // Bean for inject model dependencies throughout the application.
     @Bean
-    public OntModel createDefaultModel() {
+    public Dataset createDefaultModel() {
         return RDFModel.getInstance();
     }
 
